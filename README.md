@@ -44,17 +44,22 @@ Built with the official **MCP 2.0** architecture (`mcp.server.mcpserver.MCPServe
 ## 📦 Installation
 
 ### 1. Clone the repository
+
 ```bash
 git clone https://github.com/satyamkumar420/Linkedin-post-manager.git
 cd Linkedin-post-manager
 ```
 
 ### 2. Install dependencies
+
 Using `uv` (recommended):
+
 ```bash
 uv pip install -e .
 ```
+
 Or with standard `pip`:
+
 ```bash
 pip install -e .
 ```
@@ -66,22 +71,30 @@ pip install -e .
 You need a free LinkedIn Developer App with the **Share on LinkedIn** product (`w_member_social`, `openid`, `profile`, `email` permissions).
 
 ### Option A: 1-Click Interactive Token Helper (Recommended)
+
 Run our built-in OAuth helper:
+
 ```bash
 python setup_auth.py
 ```
+
 This will:
+
 1. Prompt for your LinkedIn `Client ID` and `Client Secret`.
 2. Open your default browser to authorize the application.
 3. Automatically capture the callback, exchange the code for an Access Token, and fetch your Person URN.
 4. Output the exact ready-to-use JSON configuration snippet for your MCP client!
 
 ### Option B: Manual Environment Setup
+
 Copy `.env.example` to `.env`:
+
 ```bash
 cp .env.example .env
 ```
+
 Fill in:
+
 ```env
 LINKEDIN_ACCESS_TOKEN=your_oauth_access_token
 LINKEDIN_PERSON_URN=urn:li:person:your_person_id
@@ -94,6 +107,7 @@ LINKEDIN_PERSON_URN=urn:li:person:your_person_id
 Add this server to your MCP configuration file (e.g. `~/.gemini/config/mcp_config.json`, Claude Desktop, or Cursor):
 
 ### Configuration in `mcp_config.json`:
+
 ```json
 {
   "mcpServers": {
@@ -118,47 +132,53 @@ Add this server to your MCP configuration file (e.g. `~/.gemini/config/mcp_confi
 ## 🧰 Available MCP Tools
 
 ### 1. Publishing & Management
-| Tool | Description |
-| :--- | :--- |
-| `publish_text_post` | Immediately publish text or link posts to your LinkedIn feed. |
-| `publish_image_post` | Upload a local image and publish a media post. |
-| `delete_post` | Delete a published LinkedIn post by its URN. |
+
+| Tool                 | Description                                                   |
+| :------------------- | :------------------------------------------------------------ |
+| `publish_text_post`  | Immediately publish text or link posts to your LinkedIn feed. |
+| `publish_image_post` | Upload a local image and publish a media post.                |
+| `delete_post`        | Delete a published LinkedIn post by its URN.                  |
 
 ### 2. Drafts Engine (Local SQLite)
-| Tool | Description |
-| :--- | :--- |
-| `save_draft` | Save an idea or post draft with optional tags and image paths. |
-| `list_drafts` | Filter drafts by status (`draft`, `ready`, `scheduled`, `published`) or search keyword. |
-| `get_draft` | Retrieve full draft content and metadata. |
-| `update_draft` | Update title, content, status, or media paths of an existing draft. |
-| `delete_draft` | Delete a saved draft from the database. |
+
+| Tool           | Description                                                                             |
+| :------------- | :-------------------------------------------------------------------------------------- |
+| `save_draft`   | Save an idea or post draft with optional tags and image paths.                          |
+| `list_drafts`  | Filter drafts by status (`draft`, `ready`, `scheduled`, `published`) or search keyword. |
+| `get_draft`    | Retrieve full draft content and metadata.                                               |
+| `update_draft` | Update title, content, status, or media paths of an existing draft.                     |
+| `delete_draft` | Delete a saved draft from the database.                                                 |
 
 ### 3. Scheduling & Queue
-| Tool | Description |
-| :--- | :--- |
-| `schedule_post` | Schedule a post for future execution (`scheduled_at_iso`). |
-| `list_scheduled_posts` | View all pending or executed scheduled posts in the queue. |
-| `cancel_scheduled_post` | Cancel a pending scheduled post. |
-| `check_and_publish_due_posts`| Manually trigger immediate publishing of any due posts. |
+
+| Tool                          | Description                                                |
+| :---------------------------- | :--------------------------------------------------------- |
+| `schedule_post`               | Schedule a post for future execution (`scheduled_at_iso`). |
+| `list_scheduled_posts`        | View all pending or executed scheduled posts in the queue. |
+| `cancel_scheduled_post`       | Cancel a pending scheduled post.                           |
+| `check_and_publish_due_posts` | Manually trigger immediate publishing of any due posts.    |
 
 ### 4. AI Optimization & Diagnostics
-| Tool | Description |
-| :--- | :--- |
-| `format_post` | Reformat text for mobile readability, list pacing, hooks, and CTAs. |
-| `analyze_post` | Character count, hook length check (<140 chars), readability score, and hashtag density. |
-| `get_my_profile` | Check authenticated user details and Person URN. |
-| `get_post_history` | View history of posts published through this manager. |
-| `get_manager_stats` | Inspect draft counts, scheduled posts, and credential health. |
+
+| Tool                | Description                                                                              |
+| :------------------ | :--------------------------------------------------------------------------------------- |
+| `format_post`       | Reformat text for mobile readability, list pacing, hooks, and CTAs.                      |
+| `analyze_post`      | Character count, hook length check (<140 chars), readability score, and hashtag density. |
+| `get_my_profile`    | Check authenticated user details and Person URN.                                         |
+| `get_post_history`  | View history of posts published through this manager.                                    |
+| `get_manager_stats` | Inspect draft counts, scheduled posts, and credential health.                            |
 
 ---
 
 ## 📚 MCP 2.0 Resources & Prompts
 
 ### Resources
+
 - `linkedin://templates/list`: List available LinkedIn post templates (`project-launch`, `tech-learning`, `career-milestone`, `hot-take`).
 - `linkedin://stats/summary`: Real-time JSON summary of local drafts and published posts.
 
 ### Prompts
+
 - `draft_tech_post`: Guided prompt instructing the LLM to write an engaging tech post.
 - `generate_viral_hooks`: Generates 5 high-converting opening hooks for any post topic.
 
@@ -167,22 +187,12 @@ Add this server to your MCP configuration file (e.g. `~/.gemini/config/mcp_confi
 ## 🧪 Testing
 
 Run the automated test suite:
+
 ```bash
 python -m unittest discover -s tests -p "test_*.py"
 ```
 
 All 7 test cases covering drafts CRUD, scheduling, post formatting, hook scoring, and MCP tool registration will execute in under a second.
-
----
-
-## 👤 Author & Maintainer
-
-**Satyam Kumar**
-- **Role:** Software Developer
-- **GitHub:** [@satyamkumar420](https://github.com/satyamkumar420)
-- **LinkedIn:** [satyamkumar404](https://www.linkedin.com/in/satyamkumar404/)
-- **Email:** satyamkumar2460@gmail.com
-- **Phone:** +91 9693756696
 
 ---
 
