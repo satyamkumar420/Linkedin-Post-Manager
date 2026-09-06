@@ -1,9 +1,15 @@
+<div align="center">
+
+<img src="./assets/banner.svg" alt="LinkedIn Post Manager MCP 2.0 Banner" width="100%" />
+
 # 🚀 LinkedIn Post Manager MCP 2.0 Server
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
 [![MCP 2.0](https://img.shields.io/badge/MCP-2.0%2B-orange.svg)](https://modelcontextprotocol.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/satyam404)
+
+</div>
 
 An enterprise-grade, modular **Model Context Protocol (MCP 2.0)** server for drafting, optimizing, scheduling, managing, and publishing posts to **LinkedIn**.
 
