@@ -40,6 +40,11 @@ class Settings:
         return os.environ.get("LINKEDIN_CLIENT_SECRET", "").strip()
 
     @property
+    def api_version(self) -> str:
+        """LinkedIn REST API Version (defaults to recent active version '202608')."""
+        return os.environ.get("LINKEDIN_VERSION", "202608").strip()
+
+    @property
     def db_path(self) -> Path:
         """SQLite database path for drafts and schedules."""
         custom_path = os.environ.get("LINKEDIN_DB_PATH")

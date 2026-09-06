@@ -162,3 +162,72 @@ def format_linkedin_post(
             result += f"\n\n{' '.join(clean_tags)}"
 
     return result
+
+
+def clean_markdown_links(text: str) -> str:
+    """Convert markdown links [Label](URL) to plain text representation suitable for LinkedIn.
+
+    If Label is identical to URL or URL without protocol, returns URL.
+    Otherwise returns 'Label: URL'.
+    """
+    def _repl(match: re.Match) -> str:
+        label = match.group(1).strip()
+        url = match.group(2).strip()
+        clean_lbl = label.replace("http://", "").replace("https://", "").rstrip("/")
+        clean_u = url.replace("http://", "").replace("https://", "").rstrip("/")
+        if clean_lbl == clean_u:
+            return url
+        return f"{label}: {url}"
+
+    return re.sub(r"\[([^\]]+)\]\((https?://[^\)]+)\)", _repl, text)
+
+
+def escape_linkedin_commentary(text: str) -> str:
+    """Escape reserved characters for LinkedIn Little Text format in commentary.
+
+    LinkedIn's Posts API uses 'Little Text' format for commentary.
+    According to official LinkedIn documentation:
+    Reserved characters: \\ | { } @ [ ] ( ) < > * _ ~
+
+    CRITICAL: When LinkedIn API encounters unescaped reserved characters like '(',
+    it attempts to parse them as Little Text elements (e.g. mentions). When parsing
+    fails, LinkedIn SILENTLY TRUNCATES/DROPS all subsequent content in the post!
+    This causes posts to be cut off at the first parenthesis without a '...see more' button.
+
+    This function:
+    1. Cleans markdown links [label](url) to avoid broken Little Text element parsing.
+    2. Preserves valid LinkedIn mentions @[Display Name](urn:li:...) if present.
+    3. Escapes all Little Text reserved characters with a backslash.
+    """
+    if not text:
+        return text
+
+    # Step 1: Normalize and clean markdown links
+    text = clean_markdown_links(text)
+
+    # Step 2: Preserve any valid Little Text mentions: @[Display Name](urn:li:person/organization:...)
+    mentions: list[str] = []
+
+    def _preserve_mention(m: re.Match) -> str:
+        mentions.append(m.group(0))
+        return f"__LINKEDIN_MENTION_{len(mentions)-1}__"
+
+    text = re.sub(
+        r"@\[[^\]]+\]\(urn:li:(?:person|organization):\w+\)",
+        _preserve_mention,
+        text,
+    )
+
+    # Step 3: Escape backslashes first
+    text = text.replace("\\", "\\\\")
+
+    # Step 4: Escape Little Text reserved characters: | { } @ [ ] ( ) < > * _ ~
+    reserved_pattern = r"([|{}@\[\]()<>\*\_~])"
+    text = re.sub(reserved_pattern, r"\\\1", text)
+
+    # Step 5: Restore preserved mentions
+    for idx, mention in enumerate(mentions):
+        text = text.replace(f"__LINKEDIN_MENTION_{idx}__", mention)
+
+    return text
+

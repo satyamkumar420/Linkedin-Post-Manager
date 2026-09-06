@@ -9,6 +9,8 @@ from linkedin_post_manager.db import Database
 from linkedin_post_manager.formatter import (
     analyze_post_structure,
     format_linkedin_post,
+    clean_markdown_links,
+    escape_linkedin_commentary,
     POST_TEMPLATES,
 )
 from linkedin_post_manager.server import mcp
@@ -102,6 +104,30 @@ class TestLinkedInPostManager(unittest.TestCase):
         self.assertIn("#Python", formatted)
         self.assertIn("#AI", formatted)
         self.assertIn("👇", formatted)
+
+    def test_clean_markdown_links(self):
+        raw = "Check [our repo](https://github.com/coollabsio/coolify) and [https://coolify.io](https://coolify.io)!"
+        cleaned = clean_markdown_links(raw)
+        self.assertEqual(cleaned, "Check our repo: https://github.com/coollabsio/coolify and https://coolify.io!")
+
+    def test_escape_linkedin_commentary(self):
+        raw = "Coolify (open-source PaaS) is amazing! #DevOps #AI"
+        escaped = escape_linkedin_commentary(raw)
+        # Parentheses must be escaped so LinkedIn Little Text parser does not truncate!
+        self.assertIn(r"Coolify \(open-source PaaS\)", escaped)
+        self.assertIn("#DevOps", escaped)
+        self.assertIn("#AI", escaped)
+
+    def test_escape_special_characters(self):
+        raw = "Features: [1] <fast> {awesome} *bullet* _italic_ ~strike~ | pipe"
+        escaped = escape_linkedin_commentary(raw)
+        self.assertIn(r"\[1\]", escaped)
+        self.assertIn(r"\<fast\>", escaped)
+        self.assertIn(r"\{awesome\}", escaped)
+        self.assertIn(r"\*bullet\*", escaped)
+        self.assertIn(r"\_italic\_", escaped)
+        self.assertIn(r"\~strike\~", escaped)
+        self.assertIn(r"\|", escaped)
 
     def test_post_structure_analyzer(self):
         short_post = "Short hook line here.\n\nHere is some body text. #tech #code"

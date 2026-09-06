@@ -6,9 +6,10 @@ from typing import Any, Optional
 import urllib.parse
 import httpx
 from linkedin_post_manager.config import settings
+from linkedin_post_manager.formatter import escape_linkedin_commentary
 
 LINKEDIN_API_BASE = "https://api.linkedin.com"
-LINKEDIN_VERSION = "202401"
+DEFAULT_LINKEDIN_VERSION = "202608"
 RESTLI_PROTOCOL_VERSION = "2.0.0"
 
 
@@ -46,7 +47,7 @@ class LinkedInClient:
             )
         headers = {
             "Authorization": f"Bearer {token}",
-            "LinkedIn-Version": LINKEDIN_VERSION,
+            "LinkedIn-Version": settings.api_version or DEFAULT_LINKEDIN_VERSION,
             "X-Restli-Protocol-Version": RESTLI_PROTOCOL_VERSION,
         }
         if content_type:
@@ -95,7 +96,7 @@ class LinkedInClient:
 
         payload = {
             "author": author_urn,
-            "commentary": text,
+            "commentary": escape_linkedin_commentary(text),
             "visibility": visibility.upper(),
             "distribution": {
                 "feedDistribution": "MAIN_FEED",
@@ -220,7 +221,7 @@ class LinkedInClient:
         headers = self._get_headers()
         payload = {
             "author": author_urn,
-            "commentary": text,
+            "commentary": escape_linkedin_commentary(text),
             "visibility": visibility.upper(),
             "distribution": {
                 "feedDistribution": "MAIN_FEED",
